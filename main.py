@@ -20,6 +20,7 @@ class Summoner:
 
     def perder_mana(self):
         self.__mana -= 1
+        return self.__mana
 
 class Summon(Summoner):
     def __init__(self, nome, mana, afinidade, dano, defesa, passiva) -> None:
@@ -117,6 +118,7 @@ class Jogo():
             print(f"Summoners escolhidos: {primeiro_summoner.get_nome()} e {segundo_summoner.get_nome()}")
         else:
             print("Algo deu errado! Escolha dois Summoners diferentes usando números de 1 a 4.")
+            exit("Reinicie o Jogo")
 
         input("Pressione enter para Iniciar!")
 
@@ -179,7 +181,7 @@ class Jogo():
 
         rodada = 1
 
-        while primeiro_summoner.get_mana() > 0 and segundo_summoner.get_mana() > 0:
+        while primeiro_summoner.get_mana() >= 0 and segundo_summoner.get_mana() >= 0:
             if rodada % 2 != 0:
                 rodada += 1
                 print(f"\n{primeiro_summoner.exibir_detalhes()}")
@@ -191,6 +193,8 @@ class Jogo():
                     summona_em_campo.atacar(summonb_em_campo)
                     if summonb_em_campo.get_defesa() <= 0:
                         print(f"\n{summonb_em_campo.get_nome()} foi derrotado!\n")
+                        segundo_summoner.perder_mana()
+                        print(f"\n{segundo_summoner.exibir_detalhes()}\n")
                         deck_b.remove(summonb_em_campo)
                         summonb_em_campo = None
                         segundo_summoner.perder_mana()
@@ -202,7 +206,7 @@ class Jogo():
                             escolha_summon = int(input("Escolha um Summon para o combate: "))
                             summonb_em_campo = deck_b[escolha_summon - 1]
                             print(f"{segundo_summoner.get_nome()} sumonou {summonb_em_campo.get_nome()}!")
-
+            
             elif rodada % 2 == 0:
                 rodada += 1
                 print(f"\n{segundo_summoner.exibir_detalhes()}")
@@ -213,10 +217,11 @@ class Jogo():
                 if acao == 1:
                     summonb_em_campo.atacar(summona_em_campo)
                     if summona_em_campo.get_defesa() <= 0:
-                        print(f"\n{summona_em_campo.get_nome} foi derrotado!\n")
+                        print(f"\n{summona_em_campo.get_nome()} foi derrotado!\n")
+                        primeiro_summoner.perder_mana()
+                        print(f"\n{primeiro_summoner.exibir_detalhes()}\n")
                         deck_a.remove(summona_em_campo)
                         summona_em_campo = None
-                        primeiro_summoner.perder_mana()
 
                         if primeiro_summoner.get_mana() > 0:
                             for indice, summons in enumerate(deck_a):
@@ -224,8 +229,12 @@ class Jogo():
 
                             escolha_summon = int(input("Escolha um Summon para o combate: "))
                             summona_em_campo = deck_a[escolha_summon - 1]
-                            print(f"{primeiro_summoner.get_nome()} sumonou {summona_em_campo.get_nome()}!")
-
+                            print(f"{primeiro_summoner.get_nome()} sumonou {summona_em_campo.get_nome()}!") 
+            
+        if primeiro_summoner.get_mana() == 0:
+            print(f"Parabéns {primeiro_summoner.get_nome()} Venceu a batalha!")
+        else:
+            print(f"Parabéns {segundo_summoner.get_nome()} Venceu a batalha!")
                 
 # Criar instancia do jogo e iniciar batalha
 
